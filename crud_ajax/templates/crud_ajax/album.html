@@ -8,13 +8,16 @@
     <h1>Django ajax teste</h1>
     <div class="row">
       <div class="col-md-4 ">
-        <h3>Adiocionar Conta</h3>
-        <form id="addConta" action="">
+        <h3>Adicionar Album</h3>
+        <form id="addAlbum" action="">
           <div class="form-group">
-            <input class="form-control" type="text" name="desc" placeholder="Descrição" required>
+            <input class="form-control" type="text" name="name" placeholder="Nome" required>
           </div>
           <div class="form-group">
-            <input class="form-control" type="text" name="fornecedor" placeholder="Fornecedor" required>
+            <input class="form-control" type="text" name="num_stars" placeholder="num_stars" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="artist" placeholder="artist" required>
           </div>
           <button class="btn btn-primary form-control" type="submit">ADICONAR</button>
         </form>
@@ -23,15 +26,17 @@
         <h3>CONTA</h3>
         <table id="userTable" class="table table-striped">
           <tr>
-            <th>ID</th>
-            <th>Descrição</th>
-            <th colspan="3">Fornecedor</th>
+            <th>Name</th>
+            <th>Artista</th>
+            <th colspan="3">Numero de Estrelas</th>
           </tr>
           {% if users %}
           {% for user in users %}
           <tr id="user-{{user.id}}">
-              <td class="userdesc userData" name="name">{{user.desc}}</td>
-              <td class="userfornecedor userData" name="fornecedor">{{user.fornecedor}}</td>
+              <td class="username userData" name="name">{{user.name}}</td>
+              <td class="userartist userData" name='artist'>{{user.artist}}</td>
+              <td class="usernum_stars userData" name='num_stars'>{{user.num_stars}}</td>
+
               <td align="center">
                   <button class="btn btn-success form-control" onClick="editUser({{user.id}})" data-toggle="modal" data-target="#myModal")">EDIT</button>
               </td>
@@ -77,16 +82,19 @@
 {% endblock %}
 {% block javascript %}
 <script>
-    $("form#addConta").submit(function() {
-        var descInput = $('input[name="desc"]').val().trim();
-        var fornecedorInput = $('input[name="fornecedor"]').val().trim();
-        if (descInput && fornecedorInput) {
+    $("form#addAlbum").submit(function() {
+        var nameInput = $('input[name="name"]').val().trim();
+        var artistInput = $('input[name="artist"]').val().trim();
+        var num_starsInput = $('input[name="num_stars"]').val().trim();
+
+        if (nameInput  && artistInput && num_starsInput) {
             // Create Ajax Call
             $.ajax({
-                url: '{% url "create" %}',
+                url: '{% url "create-album" %}',
                 data: {
-                    'desc': descInput,
-                    'fornecedor': fornecedorInput,
+                    'name': nameInput,
+                    'artist': artistInput,
+                    'num_stars': num_starsInput,
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -98,15 +106,16 @@
           } else {
             alert("All fields must have a valid value.");
         }
-        $('form#addConta').trigger("reset");
+        $('form#addAlbum').trigger("reset");
         return false;
     });
     function appendToUsrTable(user) {
       $("#userTable > tbody:last-child").append(`
             <tr id="user-${user.id}">
-                <td class="userdesc" name="name">${user.desc}</td>
-                '<td class="userfornecedor" name="address">${user.fornecedor}</td>
-                '<td align="center">
+                <td class="username" name="name">${user.name}</td>
+                 '<td class="userartist" name=" artist">${user. artist}</td>
+                 '<td class="usernum_stars" name="num_stars">${user.num_stars}</td>
+                 '<td align="center">
                     <button class="btn btn-success form-control" onClick="editUser(${user.id})" data-toggle="modal" data-target="#myModal")">EDIT</button>
                 </td>
                 <td align="center">
